@@ -8,98 +8,132 @@ import { useRouter } from "next/navigation";
 
 function Ai() {
   const { showSearch, setShowSearch } = useContext(SearchContext);
-  const navigate = useRouter();
+  const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
   const recognitionRef = useRef(null);
 
-  // ✅ Run ONLY on client after hydration
   useEffect(() => {
     setMounted(true);
 
-    if (typeof window !== "undefined") {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (typeof window === "undefined") return;
 
-      if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
-        recognition.onresult = (e) => {
-          const transcript = e.results[0][0].transcript.trim().toLowerCase();
+    if (!SpeechRecognition) return;
 
-          // 🔍 SEARCH
-          if (transcript.includes("open") && transcript.includes("search") && !showSearch) {
-            speak("Opening Search Bar");
-            setShowSearch(true);
-            navigate.push("/");
-          }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
 
-          // ❌ CLOSE SEARCH
-          else if (transcript.includes("close") && transcript.includes("search") && showSearch) {
-            speak("Closing Search Bar");
-            setShowSearch(false);
-            navigate.push("/");
-          }
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript.toLowerCase().trim();
 
-          // 🏠 HOME
-          else if (transcript.includes("open") && transcript.includes("home")) {
-            speak("Opening Home Page");
-            navigate.push("/");
-          }
+      console.log("🎤 Command:", transcript);
 
-          // 🗂 CATEGORIES
-          else if (transcript.includes("open") && transcript.includes("categories")) {
-            speak("Opening Categories");
-            navigate.push("/category");
-          }
+      
 
-          // 🛒 SHOP
-          else if (transcript.includes("open") && transcript.includes("shop")) {
-            speak("Opening Shop");
-            navigate.push("/shop");
-          }
-
-          // 📦 ORDERS
-          else if (transcript.includes("open") && transcript.includes("order")) {
-            speak("Opening Orders");
-            navigate.push("/orders");
-          }
-
-          // 🛍 CART
-          else if (transcript.includes("open") && transcript.includes("cart")) {
-            speak("Opening Cart");
-            navigate.push("/cart");
-          }
-          else if (transcript.includes("open") && transcript.includes("support")) {
-            speak("Opening Support Page");
-            navigate.push("/support");
-          }
-        };
-
-        recognitionRef.current = recognition;
+      // 🔍 SEARCH
+      if (transcript.includes("search")) {
+        speak(showSearch ? "Closing search bar" : "Opening search bar");
+        setShowSearch(!showSearch);
+        router.push("/category");
       }
-    }
-  }, [showSearch]);
 
-  function speak(message) {
-    const utterence = new SpeechSynthesisUtterance(message);
-    window.speechSynthesis.speak(utterence);
+      // 🏠 HOME
+      else if (transcript.includes("home")) {
+        speak("Opening home page");
+        router.push("/");
+      }
+
+      // 🗂 CATEGORIES
+      else if (transcript.includes("category")) {
+        speak("Opening categories");
+        router.push("/category");
+      }
+
+      // 🛒 SHOP
+      else if (transcript.includes("shop")) {
+        speak("Opening shop");
+        router.push("/shop");
+      }
+
+      // 📦 ORDERS
+      else if (transcript.includes("order")) {
+        speak("Opening orders");
+        router.push("/orders");
+      }
+
+      // 🛍 CART
+      else if (transcript.includes("cart")) {
+        speak("Opening cart");
+        router.push("/cart");
+      }
+
+      // 🧑‍💻 SUPPORT
+      else if (transcript.includes("support") || transcript.includes("help")) {
+        speak("Opening support page");
+        router.push("/support");
+      }
+
+      // 👤 PROFILE
+      else if (
+        transcript.includes("profile") ||
+        transcript.includes("my profile") ||
+        transcript.includes("open profile") ||
+        transcript.includes("account")
+      ) {
+        speak("Opening your profile");
+        router.push("/profile"); // 🔁 change path if needed
+      }
+
+      // ❌ UNKNOWN
+      else {
+        speak("Sorry, I didn't understand");
+      }
+    };
+
+    recognition.onerror = (e) => {
+      console.error("Speech error", e);
+    };
+
+    recognitionRef.current = recognition;
+  }, [showSearch, setShowSearch, router]);
+
+  function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
   }
 
-  // ❗ Prevent server/client mismatch
   if (!mounted) return null;
 
   return (
     <div
-      className="fixed lg:bottom-[50px] md:bottom-[40px] bottom-[180px] left-[50px] z-[9999]"
+      className="
+        fixed 
+        bottom-[80px]
+        left-[20px]
+
+        md:bottom-[40px]
+        md:left-[40px]
+
+        lg:bottom-[50px]
+        lg:left-[50px]
+
+        z-[9999]
+      "
       onClick={() => recognitionRef.current?.start()}
     >
       <Image
         src={ai}
-        alt="AI"
+        alt="AI Assistant"
         width={100}
         height={100}
-        className="w-[80px] cursor-pointer"
+        className="w-[70px] md:w-[75px] lg:w-[80px] cursor-pointer"
+        priority
       />
     </div>
   );
