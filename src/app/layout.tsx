@@ -32,6 +32,10 @@ export default function RootLayout({
         </StoreProvider>
         </Provider>
        </SearchProvider>
+       <script 
+  src="https://supportai-navy.vercel.app/chatBot.js" 
+  data-owner-id="usr_111269628986000404">
+</script>
       </body>
     </html>
   );
