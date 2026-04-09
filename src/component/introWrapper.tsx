@@ -8,10 +8,13 @@ export default function IntroWrapper({ children }) {
 
   return (
     <>
+      {/* Intro overlay */}
       {!introDone && (
         <IntroAnimation onFinish={() => setIntroDone(true)} />
       )}
-      {introDone && children}
+
+      {/* Always render app */}
+      {children}
     </>
   );
 }
