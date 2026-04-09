@@ -6,7 +6,7 @@ import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 import { SearchProvider } from "@/context/SearchContext";
-import IntroAnimation from "@/component/IntroAnimation";
+import IntroWrapper from "@/component/introWrapper";
 
 export const metadata: Metadata = {
   title: "Multi-Cart",
@@ -25,8 +25,10 @@ export default function RootLayout({
           <Provider>
             <StoreProvider>
               <InitUser />
-              <IntroAnimation />
-              {children}
+            
+              <IntroWrapper>
+  {children}
+</IntroWrapper>
               <Ai />
             </StoreProvider>
           </Provider>
