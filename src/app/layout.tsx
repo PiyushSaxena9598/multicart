@@ -6,9 +6,7 @@ import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 import { SearchProvider } from "@/context/SearchContext";
-
-
-
+import IntroAnimation from "@/component/IntroAnimation";
 
 export const metadata: Metadata = {
   title: "Multi-Cart",
@@ -22,20 +20,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="w-full min-h-screen bg-linear-to-b from-black"> 
-       <SearchProvider>
-       <Provider>
-        <StoreProvider>
-          <InitUser/>
-        {children}
-        <Ai/>
-        </StoreProvider>
-        </Provider>
-       </SearchProvider>
-       <script 
-  src="https://supportai-navy.vercel.app/chatBot.js" 
-  data-owner-id="usr_111269628986000404">
-</script>
+      <body className="w-full min-h-screen bg-linear-to-b from-black">
+        <SearchProvider>
+          <Provider>
+            <StoreProvider>
+              <InitUser />
+              <IntroAnimation />
+              {children}
+              <Ai />
+            </StoreProvider>
+          </Provider>
+        </SearchProvider>
+        <script
+          src="https://supportai-navy.vercel.app/chatBot.js"
+          data-owner-id="usr_111269628986000404"
+        ></script>
       </body>
     </html>
   );
