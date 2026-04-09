@@ -6,8 +6,7 @@ import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 import { SearchProvider } from "@/context/SearchContext";
-
-
+import ClientLayout from "@/component/ClientLayout"; // ✅ add this
 
 export const metadata: Metadata = {
   title: "Multi-Cart",
@@ -16,9 +15,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className="w-full min-h-screen bg-linear-to-b from-black">
@@ -27,11 +26,16 @@ export default function RootLayout({
             <StoreProvider>
               <InitUser />
 
-              {children}
+              {/* ✅ YAHAN WRAP KARO */}
+              <ClientLayout>
+                {children}
+              </ClientLayout>
+
               <Ai />
             </StoreProvider>
           </Provider>
         </SearchProvider>
+
         <script
           src="https://supportai-navy.vercel.app/chatBot.js"
           data-owner-id="usr_111269628986000404"
