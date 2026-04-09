@@ -6,7 +6,7 @@ import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 import { SearchProvider } from "@/context/SearchContext";
-import IntroWrapper from "@/component/IntroWrapper";
+
 
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function RootLayout({
             <StoreProvider>
               <InitUser />
 
-              <IntroWrapper>{children}</IntroWrapper>
+              {children}
               <Ai />
             </StoreProvider>
           </Provider>
